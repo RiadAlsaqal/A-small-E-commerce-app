@@ -15,7 +15,7 @@ const NotificationManager = () => {
       }}
     >
       {notifications.map(({ id, message, variant }) => (
-        <Notification id={id} message={message} variant={variant} />
+        <Notification key={id} id={id} message={message} variant={variant} />
       ))}
     </Stack>
   );

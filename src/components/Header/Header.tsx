@@ -15,16 +15,15 @@ type TProps = {
 
 const Header: React.FC<TProps> = ({ actions, tabs }) => {
   const location = useLocation();
-  const id1 = useId();
-  const id2 = useId();
+  const id = useId();
   return (
     <header className="header">
       <div className="header-tabs">
-        {tabs.map((tab) => {
+        {tabs.map((tab, index) => {
           const Badge = tab.Badge;
           if (Badge) {
             return (
-              <Badge key={id1}>
+              <Badge key={index}>
                 <button
                   className={`header-tab ${
                     location.pathname.includes(tab.label) ||
@@ -43,7 +42,7 @@ const Header: React.FC<TProps> = ({ actions, tabs }) => {
           }
           return (
             <button
-              key={id2}
+              key={id}
               className={`header-tab ${
                 location.pathname.includes(tab.label) ||
                 tab.label.includes(location.pathname.replace(/^\/+/, ""))
