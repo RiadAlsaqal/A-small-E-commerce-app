@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-
+import { useSettings } from "../../src/providers/Settings";
+import { useNotification } from "../../src/providers/Notification";
 type QueryFunction<T> = (page: number) => Promise<T[]>;
 
 type QueryResult<T> = {
@@ -18,10 +19,14 @@ const useInfiniteQuery = <T>(
   const [error, setError] = useState<Error | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-
+  const { error: settingsError } = useSettings();
+  const { addNotification } = useNotification();
   const fetchData = async () => {
     setIsLoading(true);
     try {
+      if (settingsError) {
+        throw Error("something went wrong");
+      }
       const newData = await queryFunction(page);
 
       if (newData.length === 0) {
@@ -32,6 +37,7 @@ const useInfiniteQuery = <T>(
       }
       setError(null);
     } catch (error) {
+      addNotification((error as Error).message as string, "danger");
       setError(error as Error);
     } finally {
       setIsLoading(false);

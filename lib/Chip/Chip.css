@@ -1,0 +1,23 @@
+.chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: #1976D2;
+    color: #fff;
+    border-radius: 16px;
+    padding: 4px 12px;
+    margin: 4px;
+  }
+  
+  .chip-label {
+    margin-right: 8px;
+  }
+  
+  .chip-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    color: #fff;
+  }
+  

@@ -2,6 +2,9 @@ import React from "react";
 import "./ProductCard.css";
 import { Button } from "../../../lib/Button";
 import { useCard } from "../../providers/Card";
+import { Stack } from "../../../lib/Stack";
+import { Chip } from "../../../lib/Chip";
+import { productCardChipColor } from "../../constants/productCardChipColor";
 interface ProductCardProps {
   name: string;
   price: number;
@@ -21,9 +24,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   style,
   showAction = true,
 }) => {
-  const card = useCard();
-  const isInTheCard = card?.card.some((i) => i.id === id);
-  console.log("card", card);
+  const { items, handleDeleteItem, handleAddItem } = useCard();
+  const isInTheCard = items?.some((i) => i.id === id);
+  const itemInThCard = items.find((item) => item.id === id);
   return (
     <div className="product-card" style={style}>
       <div className="product-image">
@@ -35,14 +38,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
         />
       </div>
       <h2 className="product-name">{name}</h2>
-      <p className="product-price">${price.toFixed(2)}</p>
+      <Stack style={{ flexDirection: "row", justifyContent: "space-around" }}>
+        <p className="product-price">${price.toFixed(2)}</p>
+        <Chip
+          color={
+            productCardChipColor[!itemInThCard ? "normal" : itemInThCard.status]
+          }
+          label={!itemInThCard?.status ? "normal" : itemInThCard?.status}
+        />
+      </Stack>
       <p className="product-description">{description}</p>
       {showAction &&
         (!isInTheCard ? (
           <Button
             style={{ borderRadius: 5 }}
             onClick={() => {
-              card?.handleAddItem({
+              handleAddItem({
                 description,
                 id,
                 images: [imageUrl],
@@ -57,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Button
             style={{ backgroundColor: "#FF0000", borderRadius: 5 }}
             onClick={() => {
-              card?.handleDeleteItem(id);
+              handleDeleteItem(id);
             }}
           >
             Remove

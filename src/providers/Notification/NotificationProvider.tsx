@@ -1,14 +1,15 @@
 // NotificationProvider.tsx
 import React, { createContext, useContext, useState } from "react";
-
+type Variant = "success" | "danger" | "info";
 type Notification = {
   id: number;
   message: string;
+  variant: Variant;
 };
 
 type NotificationContextType = {
   notifications: Notification[];
-  addNotification: (message: string) => void;
+  addNotification: (message: string, variant: Variant) => void;
   removeNotification: (id: number) => void;
 };
 
@@ -22,16 +23,15 @@ const NotificationProvider: React.FC<{ children: React.ReactElement }> = ({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const idCounter = React.useRef(0);
 
-  const addNotification = (message: string) => {
+  const addNotification = (message: string, variant: Variant) => {
     const id = idCounter.current++;
-    const newNotification = { id, message };
+    const newNotification = { id, message, variant };
 
     setNotifications((prevNotifications) => [
       newNotification,
       ...prevNotifications,
     ]);
 
-    // Close the notification after 5 seconds
     setTimeout(() => removeNotification(id), 5000);
   };
 

@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
-import { ProductModel } from "src/model/Product.model";
-
-export type CardItem = ProductModel & { quantity: number };
+import { CardItem } from "../../model/cart.model";
 
 type CardContextValue = {
-  card: CardItem[];
-  handleAddItem: (item: Omit<CardItem, "quantity">) => void;
+  items: CardItem[];
+  handleAddItem: (item: Omit<CardItem, "quantity" | "status">) => void;
   handleDeleteItem: (id: number) => void;
   handleIncrementItem: (id: number) => void;
   handleDecrementItem: (id: number) => void;
+  handleBuy: () => void;
 };
 
 const CardContext = React.createContext<CardContextValue | null>(null);
@@ -18,35 +17,42 @@ type TProps = {
 };
 
 const CardProvider: React.FC<TProps> = ({ children }) => {
-  const [card, setCard] = React.useState<CardItem[]>([]);
-  const handleAddItem = (item: Omit<CardItem, "quantity">) => {
-    setCard((prev) => [...prev, { ...item, quantity: 1 }]);
-  };
-  const handleDeleteItem = (id: number) => {
-    setCard((prev) => prev.filter((i) => i.id !== id));
-  };
-  const handleIncrementItem = (id: number) => {
-    setCard((prev) =>
+  const [items, setItems] = React.useState<CardItem[]>([]);
+  const handleAddItem = React.useCallback(
+    (item: Omit<CardItem, "quantity" | "status">) => {
+      setItems((prev) => [...prev, { ...item, quantity: 1, status: "added" }]);
+    },
+    []
+  );
+  const handleDeleteItem = React.useCallback((id: number) => {
+    setItems((prev) => prev.filter((i) => i.id !== id));
+  }, []);
+  const handleIncrementItem = React.useCallback((id: number) => {
+    setItems((prev) =>
       prev.map((i) => {
         if (i.id === id) return { ...i, quantity: i.quantity + 1 };
         return i;
       })
     );
-  };
-  const handleDecrementItem = (id: number) => {
-    setCard((prev) =>
+  }, []);
+  const handleDecrementItem = React.useCallback((id: number) => {
+    setItems((prev) =>
       prev.map((i) => {
         if (i.id === id) return { ...i, quantity: i.quantity - 1 };
         return i;
       })
     );
-  };
+  }, []);
+  const handleBuy = React.useCallback(() => {
+    setItems((prev) => prev.map((item) => ({ ...item, status: "bought" })));
+  }, []);
   const value: CardContextValue = {
-    card,
+    items,
     handleAddItem,
     handleDecrementItem,
     handleDeleteItem,
     handleIncrementItem,
+    handleBuy,
   };
 
   return <CardContext.Provider value={value}>{children}</CardContext.Provider>;

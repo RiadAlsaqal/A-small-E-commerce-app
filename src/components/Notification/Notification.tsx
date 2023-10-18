@@ -1,10 +1,14 @@
 import React from "react";
 import { useNotification } from "../../providers/Notification";
+import "./Notification.css";
 
-const Notification: React.FC<{ id: number; message: string }> = ({
-  id,
-  message,
-}) => {
+type Variant = "success" | "danger" | "info";
+
+const Notification: React.FC<{
+  id: number;
+  message: string;
+  variant: Variant;
+}> = ({ id, message, variant }) => {
   const { removeNotification } = useNotification();
 
   const handleClose = () => {
@@ -12,8 +16,8 @@ const Notification: React.FC<{ id: number; message: string }> = ({
   };
 
   return (
-    <div className="notification">
-      {message}
+    <div className={`notification ${variant}`}>
+      <p style={{ textAlign: "center", width: "100%" }}> {message}</p>
       <button className="close-button" onClick={handleClose}>
         X
       </button>

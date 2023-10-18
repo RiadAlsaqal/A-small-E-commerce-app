@@ -2,18 +2,28 @@ import { Stack } from "../../../lib/Stack";
 import { Paper } from "../../../lib/Papper";
 import { useState } from "react";
 import { ProductCard } from "../../components/ProductCard";
-import { useCard, CardItem } from "../../providers/Card";
+import { useCard } from "../../providers/Card";
 import { Button } from "../../../lib/Button";
 import ProductListControler from "./components/ProductListControler";
 import EmptyCartView from "./components/EmptyCartView/EmptyCartIcon";
+import { CardItem } from "../../model/cart.model";
+import useBuyItemsMutation from "./hooks/useBuyItemsMutation";
+import { useNavigate } from "react-router-dom";
+import calculatePrice from "./utils/calculatePrice";
+import { Chip } from "../../../lib/Chip";
+import { useNotification } from "../../providers/Notification";
 
 const CartPage = () => {
-  const { card } = useCard();
-  const [selectedCart, setSelectedCart] = useState<CardItem>(card[0]);
+  const { items, handleBuy } = useCard();
+  const itemsNotBought = items?.filter((item) => item.status !== "bought");
+  const [selectedCart, setSelectedCart] = useState<CardItem>(itemsNotBought[0]);
+  const { isLoading, mutateAsync } = useBuyItemsMutation();
+  const navigate = useNavigate();
+  const { addNotification } = useNotification();
   return (
     <Stack style={{ justifyContent: "center" }}>
       <Paper style={{ height: "80vh", width: "50%", alignSelf: "center" }}>
-        {card?.length === 0 ? (
+        {itemsNotBought?.length === 0 ? (
           <EmptyCartView />
         ) : (
           <Stack
@@ -34,7 +44,24 @@ const CartPage = () => {
                 style={{ height: "60vh", width: "20vw" }}
                 showAction={false}
               />
-              <Button onClick={() => {}} circleButton>
+              <Chip
+                color="#B0BEC5"
+                label={`final price : ${calculatePrice(itemsNotBought)}`}
+                style={{ width: "fit-content" }}
+              />
+              <Button
+                loading={isLoading}
+                onClick={() => {
+                  mutateAsync(items).then((e) => {
+                    if (e) {
+                      handleBuy();
+                      addNotification("done", "success");
+                      navigate("/Products");
+                    }
+                  });
+                }}
+                circleButton
+              >
                 Buy
               </Button>
             </Stack>

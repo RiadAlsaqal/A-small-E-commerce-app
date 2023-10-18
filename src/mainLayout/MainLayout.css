@@ -1,5 +1,9 @@
+.Layout{ 
+  display: flex;
+  justify-content: center;
+}
 .mainLayout {
-    width: 100%;
+    width: 99%;
     height: 85vh; 
     box-sizing: border-box;
     margin: 0;
