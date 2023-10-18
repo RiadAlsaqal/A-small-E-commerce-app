@@ -1,0 +1,9 @@
+
+.paper {
+    background-color: rgb(221, 220, 220);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border-radius: 4px;
+    margin: 16px 0;
+  }
+  

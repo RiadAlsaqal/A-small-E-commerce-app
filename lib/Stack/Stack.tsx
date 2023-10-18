@@ -1,15 +1,20 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import "./Stack.css";
+
 type TProps = {
-  children: React.ReactElement[];
+  children: React.ReactElement[] | React.ReactElement;
   style?: React.CSSProperties;
+  onCLick?: React.DOMAttributes<HTMLDivElement>["onClick"];
 };
-const Stack: React.FC<TProps> = ({ children, style }) => {
-  return (
-    <div className="stack" style={style}>
-      {children}
-    </div>
-  );
-};
+
+const Stack = forwardRef<HTMLDivElement, TProps>(
+  ({ children, style, onCLick }, ref) => {
+    return (
+      <div onClick={onCLick} className="stack" style={style} ref={ref}>
+        {children}
+      </div>
+    );
+  }
+);
 
 export default Stack;
