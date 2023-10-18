@@ -16,14 +16,11 @@
    
    ```bash
    cd your-project
-
-3.Install dependencies:
+3. Install dependencies:
 
    ```bash
    npm install
 
-
-4.Run the Development Server
-      
+4.  Run the Development Server
    ```bash
 npm run dev
